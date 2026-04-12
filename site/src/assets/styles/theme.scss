@@ -1,0 +1,44 @@
+// Background colors
+$bg-primary: #1a1a2e;
+$bg-secondary: #16213e;
+$bg-card: #222244;
+$bg-input: #1a1a2e;
+$bg-hover: #2a2a4a;
+
+// Text colors
+$text-primary: #e0e0e0;
+$text-secondary: #c0c0c0;
+$text-muted: #888899;
+
+// Accent
+$accent: #6c63ff;
+$accent-hover: #5a52d5;
+
+// Borders
+$border-color: #333355;
+$border-radius: 6px;
+
+// Type colors
+$type-string: #4ec9b0;
+$type-number: #569cd6;
+$type-boolean: #c586c0;
+$type-enum: #ce9178;
+$type-array: #4fc1ff;
+$type-object: #dcdcaa;
+$type-default: #888899;
+
+// Status colors
+$success: #4caf50;
+$danger: #f44336;
+$warning: #ff9800;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+// Font
+$font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+$font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

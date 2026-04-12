@@ -1,0 +1,137 @@
+@use 'theme' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-ui;
+  background-color: $bg-primary;
+  color: $text-primary;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: $spacing-md;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: $spacing-sm;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: $spacing-sm;
+}
+
+a {
+  color: $accent;
+  text-decoration: none;
+  &:hover {
+    color: $accent-hover;
+  }
+}
+
+// Utility classes
+.mono {
+  font-family: $font-mono;
+}
+
+.muted {
+  color: $text-muted;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.panel {
+  background-color: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  background-color: $bg-card;
+  color: $text-primary;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background-color: $bg-hover;
+    border-color: $accent;
+  }
+}
+
+.btn-primary {
+  @extend .btn;
+  background-color: $accent;
+  border-color: $accent;
+  color: #fff;
+
+  &:hover {
+    background-color: $accent-hover;
+    border-color: $accent-hover;
+  }
+}
+
+.btn-danger {
+  @extend .btn;
+  border-color: $danger;
+  color: $danger;
+
+  &:hover {
+    background-color: rgba($danger, 0.15);
+  }
+}
+
+pre {
+  font-family: $font-mono;
+  font-size: 0.85rem;
+  background-color: $bg-secondary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+textarea {
+  font-family: $font-mono;
+  font-size: 0.85rem;
+  background-color: $bg-input;
+  color: $text-primary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  resize: vertical;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    border-color: $accent;
+  }
+}

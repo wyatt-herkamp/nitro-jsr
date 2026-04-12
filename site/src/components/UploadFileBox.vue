@@ -109,7 +109,6 @@ async function onFileAdd() {
 
     try {
       const file = fileInput.value.files[0]
-      await new Promise((resolve) => setTimeout(resolve, 1000))
       const fileAsString = await file.text()
       //TODO: Make sure it is a json file
       // All other parsing logic should happen in the parent component
@@ -127,22 +126,20 @@ async function onFileAdd() {
 }
 </script>
 <style scoped lang="scss">
+@use '@/assets/styles/theme' as *;
+
 div {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-
-  #howToUpload {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
 }
 
 #upload {
-  width: 35rem;
-  height: 20rem;
+  width: 100%;
+  max-width: 35rem;
+  height: 12rem;
   padding: 1rem;
 
   #file {
@@ -152,8 +149,7 @@ div {
   #fileInputBox {
     &:hover {
       cursor: pointer;
-
-      border: 2px dashed green;
+      border-color: $accent;
     }
   }
 }
@@ -161,10 +157,18 @@ div {
 .uploadBox {
   width: 100%;
   height: 100%;
-  border: 2px dashed black;
+  border: 2px dashed $border-color;
+  border-radius: $border-radius;
+  background-color: $bg-card;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .highlight {
-  box-shadow: 0 0 50px 15px #68a263;
+  border-color: $accent;
+  box-shadow: 0 0 30px 5px rgba($accent, 0.2);
 }
 </style>

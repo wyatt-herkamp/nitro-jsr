@@ -7,6 +7,7 @@ import { IfCondition, parseIfCondition } from './schemaParser/condition'
 import { UnsupportedSchemaError } from './errors'
 import { EnumPatternTypes, isAnyOfEnumPattern } from './schemaParser/enums'
 import { enumInputAdjacentTagged } from './inputTypes/EnumInput2'
+import { enumInputInternallyTagged } from './inputTypes/InternalEnumInput'
 /**
  * Parses a stringified JSON schema into a form
  * @param schema schema to be parsed into a form
@@ -19,7 +20,7 @@ export function parseJsonSchema(schema: string, config?: ParsingConfig): SchemaF
 export function createForm(schema: RootSchema, config?: ParsingConfig): SchemaForm {
   const actualConfig = new InternalConfig(config)
   if (!isSupportedSchemaVersion(schema)) {
-    if (actualConfig.denyOnUnknownSchema) {
+    if (actualConfig.denyOnUnknownSchema()) {
       throw new UnsupportedSchemaError(schema.$schema)
     } else {
       console.warn(`${schema.$schema} is not supported. This could lead to unexpected results`)
@@ -56,7 +57,13 @@ export function createForm(schema: RootSchema, config?: ParsingConfig): SchemaFo
       console.debug(`[DEBUG] Found Enum Pattern ${JSON.stringify(anyOfEnum)}`)
 
       if (anyOfEnum.type === EnumPatternTypes.InternallyTagged) {
-        throw new Error('Internally Tagged Enum Patterns are not supported yet')
+        const enumInput = enumInputInternallyTagged(schema.oneOf, parsingSchema)
+        if (enumInput) {
+          if (result.primary.properties === undefined) {
+            result.primary.properties = []
+          }
+          result.primary.properties.push(enumInput)
+        }
       } else if (anyOfEnum.type === EnumPatternTypes.AdjacentlyTagged) {
         const enumInput = enumInputAdjacentTagged(
           anyOfEnum.keyTag,

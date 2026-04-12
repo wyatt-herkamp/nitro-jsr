@@ -112,7 +112,12 @@ export class SchemaForm {
     const errors = new Array<ValidationError>()
     for (const property of properties) {
       if (Array.isArray(property.key())) {
-        console.debug(`[DEBUG] Skipping array property ${property.key()}`)
+        const validationResult = property.validator().validate(input)
+        if (!validationResult.success) {
+          errors.push(
+            new ValidationError((property.key() as string[]).join('|'), validationResult.error)
+          )
+        }
         continue
       } else {
         const validationResult = property.validator().validate(input[property.key() as string])

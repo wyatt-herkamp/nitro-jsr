@@ -12,7 +12,17 @@ import {
   faArrowLeft,
   faArrowRight,
   faAnglesRight,
-  faAnglesLeft
+  faAnglesLeft,
+  faCheck,
+  faExclamationTriangle,
+  faExclamationCircle,
+  faChevronDown,
+  faChevronRight,
+  faCode,
+  faBug,
+  faFlask,
+  faTrash,
+  faUpload
 } from '@fortawesome/free-solid-svg-icons'
 import App from './App.vue'
 import router from './router'
@@ -22,15 +32,28 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-library.add(faGear)
-library.add(faFileText)
-library.add(faRightToBracket)
-library.add(faX)
 
-library.add(faArrowLeft)
-library.add(faArrowRight)
-library.add(faAnglesRight)
-library.add(faAnglesLeft)
+library.add(
+  faGear,
+  faFileText,
+  faRightToBracket,
+  faX,
+  faArrowLeft,
+  faArrowRight,
+  faAnglesRight,
+  faAnglesLeft,
+  faCheck,
+  faExclamationTriangle,
+  faExclamationCircle,
+  faChevronDown,
+  faChevronRight,
+  faCode,
+  faBug,
+  faFlask,
+  faTrash,
+  faUpload
+)
+
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.use(Notifications)
 

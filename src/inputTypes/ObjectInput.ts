@@ -44,7 +44,7 @@ export class ObjectInputType implements FormInputType {
     return this.property.default
   }
   debug(): string {
-    const titleOrKey = this.title ?? this.key
+    const titleOrKey = this.title() ?? this.key()
     const itemsDebug = this.items.map((item) => item.debug()).join(', ')
     return `Object: ${titleOrKey} [${itemsDebug}]`
   }

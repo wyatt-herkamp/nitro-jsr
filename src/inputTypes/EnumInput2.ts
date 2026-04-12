@@ -1,7 +1,6 @@
 import { FormInputType, InputValidator, ValidationResult } from './index'
-import { parseProperty, Property } from '../lib'
+import { parseProperty, Property, BaseSchema } from '../lib'
 import { ParsingSchema } from '../schemaParser'
-import { BaseSchema } from '../../dist/lib'
 
 export interface EnumValue {
   keyProperty: string
@@ -63,22 +62,22 @@ export class AdjacentEnumInput implements FormInputType {
     return this.propertyKey
   }
   description(): string | undefined {
-    return this.property.description
+    return this.property?.description
   }
   isRequired(): boolean {
-    return this.property.required ?? false
+    return this.property?.required ?? false
   }
   readOnly(): boolean {
-    return this.property.readOnly ?? false
+    return this.property?.readOnly ?? false
   }
   writeOnly(): boolean {
-    return this.property.writeOnly ?? false
+    return this.property?.writeOnly ?? false
   }
   deprecated(): boolean {
-    return this.property.deprecated ?? false
+    return this.property?.deprecated ?? false
   }
   default() {
-    return this.property.default
+    return this.property?.default
   }
   debug(): string {
     const titleOrKey = this.title() ?? this.key()
@@ -102,7 +101,7 @@ export class AdjacentEnumInput implements FormInputType {
       return undefined
     }
     const enumValue = this.values.find((enumValue) => enumValue.keyProperty === value)
-    if (enumValue) {
+    if (enumValue && enumValue.value) {
       return [enumValue.value]
     }
   }

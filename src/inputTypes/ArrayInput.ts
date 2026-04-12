@@ -163,7 +163,7 @@ export class ArrayInput implements FormInputType {
     return this.property.default
   }
   debug(): string {
-    const titleOrKey = this.title ?? this.key
+    const titleOrKey = this.title() ?? this.key()
     return `Array: ${titleOrKey}`
   }
 

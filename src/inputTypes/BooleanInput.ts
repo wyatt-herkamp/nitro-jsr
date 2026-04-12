@@ -40,7 +40,7 @@ export class BooleanInput implements FormInputType {
     return this.property.default
   }
   debug(): string {
-    const titleOrKey = this.title ?? this.key
+    const titleOrKey = this.title() ?? this.key()
     return `Bool: ${titleOrKey}`
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

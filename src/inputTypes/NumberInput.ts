@@ -88,8 +88,8 @@ export class NumberInput implements FormInputType {
     return this.property.default
   }
   debug(): string {
-    const titleOrKey = this.title ?? this.key
-    return `Bool: ${titleOrKey}`
+    const titleOrKey = this.title() ?? this.key()
+    return `Number: ${titleOrKey}`
   }
   validator(): InputValidator {
     const validators = Array<InputValidator>()
