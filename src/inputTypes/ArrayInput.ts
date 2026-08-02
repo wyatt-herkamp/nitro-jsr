@@ -193,7 +193,7 @@ export function arrayInputFromProperty(
   property: Property,
   parsingSchema: ParsingSchema
 ): ArrayInput | undefined {
-  if (property.type !== 'string') {
+  if (property.type !== 'array') {
     return undefined
   }
   return new ArrayInput(property, key)

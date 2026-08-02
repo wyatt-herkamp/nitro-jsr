@@ -1,93 +1,112 @@
-// Checks if the anyOf is a pattern of enums
-// We are defining a pattern of enums either as a a bunch of objects following a pattern of
-// Some property that is const and has a value then another property with data. Or Adjacent enums
-// Or of with its own key with a different value.
+// Detects whether a `oneOf`/`anyOf` array is really a tagged-enum pattern rather than a set of
+// unrelated alternatives.
+//
+// Two shapes are recognised, and they are told apart by whether a *discriminator* property — one
+// whose subschema pins a literal via `const` — is present in every branch:
+//
+//   Adjacently tagged (serde `#[serde(tag = "t", content = "c")]`):
+//     { properties: { t: { const: "Unit" } },                    required: ["t"] }
+//     { properties: { t: { const: "Data" }, c: { ...schema } },   required: ["t", "c"] }
+//   Externally tagged (serde's default, `{"Variant": {...}}`):
+//     { properties: { Unit: { ...schema } } }
+//     { properties: { Data: { ...schema } } }
+//
+// Note that branch *arity* cannot be used to classify: an adjacently tagged enum mixing unit and
+// data variants has both 1-property and 2-property branches, and an earlier version of this file
+// locked its answer in from the first branch and so rejected exactly that case.
 
-import { BaseSchema } from '../lib'
+import { BaseSchema } from './index'
 export type EnumPatternType =
   | {
       type: EnumPatternTypes.AdjacentlyTagged
       keyTag: string
-      valueTag: string
+      /**
+       * The content property. `undefined` when every variant is a unit variant, so no branch
+       * carries a content property at all.
+       */
+      valueTag: string | undefined
     }
   | {
       type: EnumPatternTypes.InternallyTagged
     }
 export enum EnumPatternTypes {
   AdjacentlyTagged,
+  /**
+   * One property per branch, naming the variant, with no `const` discriminator.
+   *
+   * This is serde's *externally* tagged form. The name is kept for backwards compatibility.
+   */
   InternallyTagged
 }
+
+type Properties = NonNullable<BaseSchema['properties']>
+
 export function isAnyOfEnumPattern(anyOf: Array<BaseSchema>): EnumPatternType | undefined {
-  let patternType = undefined
-  for (const schema of anyOf) {
-    if (patternType === undefined) {
-      const detectedPattern = detectEnumPattern(schema, undefined)
-      console.info(`[DEBUG] Detected Enum Pattern ${JSON.stringify(detectedPattern)}`)
-      if (detectedPattern === undefined) {
-        return undefined
-      }
-      patternType = detectedPattern
-    } else {
-      const detectedPattern = detectEnumPattern(schema, patternType)
-      if (detectedPattern === undefined) {
-        return undefined
-      }
-    }
-  }
-  return patternType
-}
-function detectEnumPattern(
-  schema: BaseSchema,
-  patternType: EnumPatternType | undefined
-): EnumPatternType | undefined {
-  if (schema.properties === undefined) {
+  if (anyOf.length === 0) {
     return undefined
   }
-  const numberOfProperties = Object.keys(schema.properties).length
-  if (numberOfProperties === 1) {
-    return {
-      type: EnumPatternTypes.InternallyTagged
-    }
-  } else if (numberOfProperties === 2) {
-    let keyTag = undefined
-    const propertyNames = Object.keys(schema.properties)
-
-    for (const key of propertyNames) {
-      if (schema.properties[key].const !== undefined) {
-        keyTag = key
-        break
-      }
-    }
-    if (keyTag === undefined) {
+  // Every branch has to be an object schema with properties, in either shape.
+  const branches = new Array<Properties>()
+  for (const schema of anyOf) {
+    if (schema.properties === undefined) {
       return undefined
     }
-    let valueTag = undefined
-    for (const key of propertyNames) {
-      if (key !== keyTag) {
-        valueTag = key
-        break
-      }
-    }
-    if (valueTag === undefined) {
-      return undefined
-    }
-    console.debug(
-      `[DEBUG] Detected Adjacently Tagged Enum Pattern with key: ${keyTag} and value: ${valueTag}`
-    )
-    if (patternType !== undefined) {
-      if (patternType.type !== EnumPatternTypes.AdjacentlyTagged) {
-        return undefined
-      }
-      if (patternType.keyTag !== keyTag || patternType.valueTag !== valueTag) {
-        return undefined
-      }
-    }
-    return {
-      type: EnumPatternTypes.AdjacentlyTagged,
-      keyTag: keyTag,
-      valueTag: valueTag
-    }
+    branches.push(schema.properties)
   }
 
+  const adjacent = detectAdjacentlyTagged(branches)
+  if (adjacent) {
+    return adjacent
+  }
+  if (isExternallyTagged(branches)) {
+    return { type: EnumPatternTypes.InternallyTagged }
+  }
   return undefined
+}
+
+/**
+ * Looks for a single property key that carries a `const` in *every* branch, where each branch holds
+ * at most one other property and all such properties agree on a name.
+ *
+ * Candidates come from the first branch: a tag has to be `const` everywhere, so anything that is
+ * not `const` in branch 0 cannot be the tag.
+ */
+function detectAdjacentlyTagged(branches: Array<Properties>): EnumPatternType | undefined {
+  const candidates = Object.keys(branches[0]).filter((key) => branches[0][key].const !== undefined)
+  for (const keyTag of candidates) {
+    if (!branches.every((properties) => properties[keyTag]?.const !== undefined)) {
+      continue
+    }
+    let valueTag: string | undefined = undefined
+    let consistent = true
+    for (const properties of branches) {
+      const others = Object.keys(properties).filter((key) => key !== keyTag)
+      if (others.length === 0) {
+        // A unit variant carries no content, which must not disqualify the set.
+        continue
+      }
+      if (others.length > 1) {
+        consistent = false
+        break
+      }
+      if (valueTag === undefined) {
+        valueTag = others[0]
+      } else if (valueTag !== others[0]) {
+        consistent = false
+        break
+      }
+    }
+    if (!consistent) {
+      continue
+    }
+    return { type: EnumPatternTypes.AdjacentlyTagged, keyTag, valueTag }
+  }
+  return undefined
+}
+
+function isExternallyTagged(branches: Array<Properties>): boolean {
+  return branches.every((properties) => {
+    const keys = Object.keys(properties)
+    return keys.length === 1 && properties[keys[0]].const === undefined
+  })
 }

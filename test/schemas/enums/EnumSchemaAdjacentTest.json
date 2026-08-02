@@ -14,10 +14,7 @@
           "format": "int32"
         }
       },
-      "required": [
-        "type",
-        "data"
-      ]
+      "required": ["type", "data"]
     },
     {
       "type": "object",
@@ -31,10 +28,7 @@
           "format": "int32"
         }
       },
-      "required": [
-        "type",
-        "data"
-      ]
+      "required": ["type", "data"]
     },
     {
       "type": "object",
@@ -47,10 +41,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "type",
-        "data"
-      ]
+      "required": ["type", "data"]
     },
     {
       "type": "object",
@@ -63,10 +54,7 @@
           "$ref": "#/$defs/MyStruct"
         }
       },
-      "required": [
-        "type",
-        "data"
-      ]
+      "required": ["type", "data"]
     }
   ],
   "$defs": {
@@ -82,10 +70,7 @@
           "format": "int32"
         }
       },
-      "required": [
-        "a",
-        "b"
-      ]
+      "required": ["a", "b"]
     }
   }
 }

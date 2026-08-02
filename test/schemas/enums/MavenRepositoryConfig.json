@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MavenRepositoryConfig",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Hosted"
+        }
+      },
+      "required": ["type"]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Proxy"
+        },
+        "config": {
+          "$ref": "#/$defs/MavenProxyConfig"
+        }
+      },
+      "required": ["type", "config"]
+    }
+  ],
+  "$defs": {
+    "MavenProxyConfig": {
+      "type": "object",
+      "properties": {
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MavenProxyRepositoryRoute"
+          },
+          "default": []
+        },
+        "cache_ttl_seconds": {
+          "title": "Cache TTL (seconds)",
+          "description": "Seconds a cached artifact stays valid. `0` keeps it forever.\n\nNothing expired before this existed: once a file had been fetched it was served from\nstorage for good, so a corrected upstream artifact or a moved snapshot never arrived.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "default": 0
+        },
+        "mutable_ttl_seconds": {
+          "title": "Metadata and snapshot TTL (seconds)",
+          "description": "Seconds a cached `maven-metadata.xml` or snapshot build stays valid.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "default": 900
+        }
+      }
+    },
+    "MavenProxyRepositoryRoute": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "$ref": "#/$defs/ProxyURL"
+        },
+        "name": {
+          "type": ["string", "null"]
+        },
+        "priority": {
+          "description": "If Null then it will be the lowest priority",
+          "type": ["integer", "null"],
+          "format": "int32"
+        },
+        "username": {
+          "title": "Username",
+          "description": "Username for an upstream that requires authentication.",
+          "type": ["string", "null"]
+        },
+        "password": {
+          "title": "Password",
+          "description": "Password or token for an upstream that requires authentication.",
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["url"]
+    },
+    "ProxyURL": {
+      "type": "string"
+    }
+  }
+}

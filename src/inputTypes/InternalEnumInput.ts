@@ -130,7 +130,7 @@ export function enumInputInternallyTagged(
     let parsedValue: FormInputType | undefined = undefined
     try {
       parsedValue = parseProperty(variantKey, variantProperty, parsingSchema)
-    } catch (e) {
+    } catch {
       console.warn(
         `[WARN] Could not parse internally tagged variant property for key ${variantKey}`
       )

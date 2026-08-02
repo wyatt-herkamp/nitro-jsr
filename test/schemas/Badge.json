@@ -1,42 +1,44 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "BadgeSettings",
+  "title": "ProjectConfig",
   "type": "object",
   "properties": {
-    "color": {
-      "$ref": "#/$defs/RGBColor",
-      "default": "#33B5E5"
-    },
-    "label_color": {
-      "$ref": "#/$defs/RGBColor",
-      "default": "#555555"
-    },
-    "style": {
-      "$ref": "#/$defs/BadgeStyle",
-      "default": "flat"
-    },
-    "defaults": {
-      "type": "object",
-      "properties": {
-        "label": {
-          "type": "string",
-          "default": "label"
-        },
-        "message": {
-          "type": "string",
-          "default": "message"
-        }
+    "badge_settings": {
+      "title": "Badge Settings",
+      "$ref": "#/$defs/BadgeSettings",
+      "default": {
+        "style": "flat",
+        "label_color": "#555",
+        "color": "#33B5E5"
       }
+    },
+    "require_semver": {
+      "description": "Whether to require a semver version for releases",
+      "type": "boolean",
+      "default": false
     }
   },
   "$defs": {
+    "BadgeSettings": {
+      "type": "object",
+      "properties": {
+        "style": {
+          "$ref": "#/$defs/BadgeStyle",
+          "default": "flat"
+        },
+        "label_color": {
+          "type": "string",
+          "default": "#555"
+        },
+        "color": {
+          "type": "string",
+          "default": "#33B5E5"
+        }
+      }
+    },
     "BadgeStyle": {
       "type": "string",
-      "enum": ["flat", "plastic", "flatquare"]
-    },
-    "RGBColor": {
-      "type": "string",
-      "pattern": "^#(?:[0-9a-fA-F]{3}){1,2}$"
+      "enum": ["flat", "plastic", "flatsquare"]
     }
   }
 }

@@ -70,7 +70,9 @@ function parseTypedProperty(
   }
   if (!resultInputType) {
     console.warn(`No parser found for property with ${key}. ${JSON.stringify(property)}`)
-    if (parsing.config.denyOnUnknownPropertyTypes) {
+    // Called, not just referenced — a bare method reference is always truthy, which made this
+    // throw on every unrecognised property regardless of the config.
+    if (parsing.config.denyOnUnknownPropertyTypes()) {
       throw new InvalidPropertyTypeError(key, property)
     }
     resultInputType = new DefaultInput(key, property)
